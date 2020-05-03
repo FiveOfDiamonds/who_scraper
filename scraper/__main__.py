@@ -65,6 +65,8 @@ def scrape(driver, url, output_directory, reset_data=False, output_list_file=Non
     if output_list_file:
         output_list_file.write(country)
     print(" > writing to data %s" % join(output_directory, country))
+    driver.execute_script("document.evaluate(\"//div[@id='root']/div/div\", document, null, "
+                          "XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.remove();")
 
     cases = []
     deaths = []
@@ -171,7 +173,7 @@ def main(main_args):
             print(" > retrieving data listed in %s to %s" % (main_args.input, main_args.output))
 
         output_list = join(main_args.output, basename(main_args.input))
-        if exists(output_list):
+        if exists(output_list) and not main_args.reset_data:
             print(" > %s already exists, overwrite it?" % output_list)
             while input("y or [n]: ") is not 'y':
                 print(" > not overwriting file")
